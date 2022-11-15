@@ -7,6 +7,11 @@ type UserCreateRequest struct {
 	Age      int    `validate:"required"`
 }
 
+type UserLoginRequest struct {
+	Email    string `validate:"required"`
+	Password string `validate:"required"`
+}
+
 type UserUpdateRequest struct {
 	Username string
 	Email    string

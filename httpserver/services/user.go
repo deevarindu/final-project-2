@@ -21,6 +21,16 @@ func NewUserSvc(repo repositories.UserRepository) *UserSvc {
 	}
 }
 
+func (u *UserSvc) FindUserByEmail(email string) *models.User {
+	users, _ := u.repo.GetUsers()
+	for _, user := range *users {
+		if strings.EqualFold(user.Email, email) {
+			return &user
+		}
+	}
+	return nil
+}
+
 func (u *UserSvc) GetUsers() *views.Response {
 	users, err := u.repo.GetUsers()
 	if err != nil {
@@ -74,13 +84,14 @@ func (u *UserSvc) CreateUser(req *params.UserCreateRequest) *views.Response {
 	}
 	user.Password = string(hash)
 
-	users, _ := u.repo.GetUsers()
 	id := 1
-	if len(*users) > 0 {
+	if users, err := u.repo.GetUsers(); err == nil {
 		id = len(*users) + 1
 	}
 	user.Id = &id
+
 	err = u.repo.CreateUser(user)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
 			return views.DataConflictResponse(err)

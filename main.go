@@ -19,8 +19,20 @@ func main() {
 	userSvc := services.NewUserSvc(userRepository)
 	userHandler := controllers.NewUserController(userSvc)
 
+	photoRepository := gorm.NewPhotoRepository(db)
+	photoSvc := services.NewPhotoSvc(photoRepository)
+	photoHandler := controllers.NewPhotoController(photoSvc)
+
+	commentRepository := gorm.NewCommentRepository(db)
+	commentSvc := services.NewCommentSvc(commentRepository)
+	commentHandler := controllers.NewCommentController(commentSvc)
+
+	socialMediaRepository := gorm.NewSocialMediaRepository(db)
+	socialMediaSvc := services.NewSocialMediaSvc(socialMediaRepository)
+	socialMediaHandler := controllers.NewSocialMediaController(socialMediaSvc)
+
 	router := gin.Default()
 
-	app := routes.NewRouter(router, userHandler)
+	app := routes.NewRouter(router, userHandler, photoHandler, commentHandler, socialMediaHandler)
 	app.Start(":5000")
 }
